@@ -1,5 +1,6 @@
 #include "book.hpp"
 #include "order.hpp"
+#include <algorithm>
 #include <iostream>
 
 
@@ -12,9 +13,9 @@ void Book::place_order(const Order& order){
         {
             auto level = ask_map.begin();
             while (level != ask_map.end() && level->first <= order.price && remaining_quantity){
-                unsigned int temp = remaining_quantity > level->second ? remaining_quantity - level-> second : 0;
-                level->second = remaining_quantity > level->second ? 0 :  level-> second - remaining_quantity;
-                remaining_quantity = temp;
+                unsigned int fill = std::min(remaining_quantity, level->second);
+                level->second -= fill;
+                remaining_quantity -= fill;
                 level ++;
             }
             if (remaining_quantity) bid_map[order.price] += remaining_quantity;
@@ -25,9 +26,9 @@ void Book::place_order(const Order& order){
         {
             auto level = bid_map.begin();
             while (level != bid_map.end() && level->first >= order.price && remaining_quantity){
-                unsigned int temp = remaining_quantity > level->second ? remaining_quantity - level-> second : 0;
-                level->second = remaining_quantity > level->second ? 0 :  level-> second - remaining_quantity;
-                remaining_quantity = temp;
+                unsigned int fill = std::min(remaining_quantity, level->second);
+                level->second -= fill;
+                remaining_quantity -= fill;
                 level ++;
             }
             if (remaining_quantity) ask_map[order.price] += remaining_quantity;
