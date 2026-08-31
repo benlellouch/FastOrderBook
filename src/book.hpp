@@ -2,10 +2,17 @@
 #include "order.hpp"
 #include <functional>
 #include <map>
+#include <list>
+#include <uuid/uuid.h>
+
+struct OrderEntry{
+  uuid_t id;
+  unsigned int quantity;
+};
 
 class Book{
-    std::map<float, unsigned int,std::greater<float>> bid_map;
-    std::map<float, unsigned int> ask_map;
+    std::map<float, std::list<OrderEntry>,std::greater<float>> bid_map;
+    std::map<float, std::list<OrderEntry>> ask_map;
 
     public:
         void place_order(const Order& order);
