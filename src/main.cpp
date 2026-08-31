@@ -56,6 +56,9 @@ int main()
 	std::cout << "-----" <<std::endl ;
 	order_book.show_book();
 
+	order_book.place_order(Order({"APPL", OrderType::SELL, 30, 6.2f}));
 
+	std::cout << "-----" <<std::endl ;
+	order_book.show_book();
 
 }

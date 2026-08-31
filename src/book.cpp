@@ -24,7 +24,7 @@ void Book::place_order(const Order& order){
         case OrderType::SELL:
         {
             auto level = bid_map.begin();
-            while (level != bid_map.end() && level->first <= order.price && remaining_quantity){
+            while (level != bid_map.end() && level->first >= order.price && remaining_quantity){
                 unsigned int temp = remaining_quantity > level->second ? remaining_quantity - level-> second : 0;
                 level->second = remaining_quantity > level->second ? 0 :  level-> second - remaining_quantity;
                 remaining_quantity = temp;
