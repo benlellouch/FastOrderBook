@@ -2,37 +2,38 @@
 #include "order.hpp"
 #include <iostream>
 
+
 void Book::place_order(const Order& order){
 
     unsigned int remaining_quantity = order.quantity;
 
     switch (order.order_type) {
         case OrderType::BUY:
-            for (auto level = ask_map.lower_bound(order.price); level != ask_map.end(); ++level)
-            {
+        {
+            auto level = ask_map.begin();
+            while (level != ask_map.end() && level->first <= order.price && remaining_quantity){
                 unsigned int temp = remaining_quantity > level->second ? remaining_quantity - level-> second : 0;
                 level->second = remaining_quantity > level->second ? 0 :  level-> second - remaining_quantity;
                 remaining_quantity = temp;
-                if (!remaining_quantity)
-                {
-                    break;
-                }
+                level ++;
             }
-            bid_map[order.price] += remaining_quantity;
+            if (remaining_quantity) bid_map[order.price] += remaining_quantity;
             break;
+        }
+
         case OrderType::SELL:
-            for (auto level = bid_map.lower_bound(order.price); level != bid_map.end(); ++level)
-            {
+        {
+            auto level = bid_map.begin();
+            while (level != bid_map.end() && level->first <= order.price && remaining_quantity){
                 unsigned int temp = remaining_quantity > level->second ? remaining_quantity - level-> second : 0;
                 level->second = remaining_quantity > level->second ? 0 :  level-> second - remaining_quantity;
                 remaining_quantity = temp;
-                if (!remaining_quantity)
-                {
-                    break;
-                }
+                level ++;
             }
-            ask_map[order.price] += remaining_quantity;
+            if (remaining_quantity) ask_map[order.price] += remaining_quantity;
             break;
+        }
+
     }
 }
 
@@ -48,14 +49,12 @@ void Book::show_bids(){
     }
 }
 
-unsigned int Book::get_quantity_at_level(float price){
-    if (bid_map.contains(price)){
-        std::cout << "BID ";
-        return bid_map[price];
-    }
-    if (ask_map.contains(price)){
-        std::cout << "ASK ";
-        return ask_map[price];
-    }
-    return 0;
+void Book::show_book(){
+   	std::cout << "BIDS: ";
+	show_bids();
+	std::cout << std::endl;
+
+	std::cout << "ASKS: ";
+	show_asks();
+	std::cout << std::endl;
 }

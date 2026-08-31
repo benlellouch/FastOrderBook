@@ -11,6 +11,6 @@ class Book{
         void place_order(const Order& order);
         void show_asks();
         void show_bids();
-        unsigned int get_quantity_at_level(float price);
+        void show_book();
 
 };
