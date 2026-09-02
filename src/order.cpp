@@ -1,6 +1,5 @@
 #include "order.hpp"
 #include <uuid/uuid.h>
-#include <iostream>
 
 Order create_order(std::string symbol, OrderType order_type, int quantity, float price)
 {
