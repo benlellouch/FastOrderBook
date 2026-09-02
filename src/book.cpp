@@ -1,5 +1,6 @@
 #include "book.hpp"
 #include "order.hpp"
+#include <algorithm>
 #include <iostream>
 
 
@@ -29,6 +30,46 @@ void Book::place_order(const Order& order)
         }
 
     }
+}
+
+template <typename PriceOrder>
+void Book::match_orders_(RestingMap<PriceOrder>& resting_map, const Order& order, unsigned int& remaining_quantity)
+{
+    PriceOrder comp = resting_map.key_comp();
+    auto level = resting_map.begin();
+    while (level != resting_map.end() && !comp(order.price, level->first) && remaining_quantity){
+        auto entry = level->second.begin();
+        while (entry != level->second.end() && remaining_quantity){
+            unsigned int fill = std::min(remaining_quantity, entry->quantity);
+            entry->quantity -= fill;
+            remaining_quantity -= fill;
+
+            if (!entry->quantity)
+            {
+                order_map.erase(entry->id);
+                entry = level->second.erase(entry);
+            }
+            else{
+                entry ++;
+            }
+        }
+
+        if(!level->second.size())
+        {
+            level = resting_map.erase(level);
+        }
+        else{
+            level ++;
+        }
+    }
+}
+
+template <typename PriceOrder>
+void Book::push_entry_(RestingMap<PriceOrder>& resting_map, const Order& order, unsigned int quantity)
+{
+    OrderEntry entry {order.id, quantity};
+    resting_map[order.price].push_back(entry);
+    order_map[order.id] = &entry;
 }
 
 void Book::show_asks()

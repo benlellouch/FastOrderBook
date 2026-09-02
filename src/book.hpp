@@ -27,26 +27,9 @@ class Book{
         void show_book();
     private:
         template <typename PriceOrder>
-        void match_orders_(RestingMap<PriceOrder>& resting_map, const Order& order, unsigned int& remaining_quantity){
-            auto comp = resting_map.key_comp();
-            auto level = resting_map.begin();
-            while (level != resting_map.end() && !comp(order.price, level->first) && remaining_quantity){
-                auto entry = level->second.begin();
-                while (entry != level->second.end() && remaining_quantity){
-                    unsigned int fill = std::min(remaining_quantity, entry->quantity);
-                    entry->quantity -= fill;
-                    remaining_quantity -= fill;
-                    entry ++;
-                }
-                level ++;
-            }
-        }
+        void match_orders_(RestingMap<PriceOrder>& resting_map, const Order& order, unsigned int& remaining_quantity);
 
         template <typename PriceOrder>
-        void push_entry_(RestingMap<PriceOrder>& resting_map, const Order& order, unsigned int quantity){
-            OrderEntry entry {order.id, quantity};
-            resting_map[order.price].push_back(entry);
-            order_map[order.id] = &entry;
-        }
+        void push_entry_(RestingMap<PriceOrder>& resting_map, const Order& order, unsigned int quantity);
 
 };
