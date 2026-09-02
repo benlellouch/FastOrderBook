@@ -4,7 +4,8 @@
 
 
 
-void Book::place_order(const Order& order){
+void Book::place_order(const Order& order)
+{
 
     unsigned int remaining_quantity = order.quantity;
 
@@ -30,10 +31,13 @@ void Book::place_order(const Order& order){
     }
 }
 
-void Book::show_asks(){
-    for (const auto& level: ask_map){
+void Book::show_asks()
+{
+    for (const auto& level: ask_map)
+    {
         unsigned int quantities = 0;
-        for (const auto& entry: level.second){
+        for (const auto& entry: level.second)
+        {
             quantities += entry.quantity;
         }
         std::cout << "Price: " << level.first << " Quantity: " << quantities <<  ";";
@@ -41,16 +45,19 @@ void Book::show_asks(){
 }
 
 void Book::show_bids(){
-    for (const auto& level: bid_map){
+    for (const auto& level: bid_map)
+    {
         unsigned int quantities = 0;
-        for (const auto& entry: level.second){
+        for (const auto& entry: level.second)
+        {
             quantities += entry.quantity;
         }
         std::cout << "Price: " << level.first << " Quantity: " << quantities <<  ";";
     }
 }
 
-void Book::show_book(){
+void Book::show_book()
+{
    	std::cout << "BIDS: ";
 	show_bids();
 	std::cout << std::endl;

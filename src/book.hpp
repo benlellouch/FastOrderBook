@@ -1,13 +1,11 @@
 #pragma once
 #include "order.hpp"
-#include <cstring>
 #include <functional>
 #include <map>
 #include <list>
-#include <uuid/uuid.h>
-
+#include <boost/uuid/uuid.hpp>
 struct OrderEntry{
-  uuid_t id;
+  boost::uuids::uuid id;
   unsigned int quantity;
 };
 
@@ -20,6 +18,7 @@ using AskMap = RestingMap<std::less<float>>;
 class Book{
     BidMap bid_map;
     AskMap ask_map;
+    std::map<boost::uuids::uuid ,OrderEntry*> order_map;
 
     public:
         void place_order(const Order& order);
@@ -44,11 +43,10 @@ class Book{
         }
 
         template <typename PriceOrder>
-        void push_entry_(RestingMap<PriceOrder>& resting_map, const Order& order, int quantity){
-            OrderEntry entry;
-            std::memcpy(entry.id, order.id, sizeof order.id);
-            entry.quantity = quantity;
+        void push_entry_(RestingMap<PriceOrder>& resting_map, const Order& order, unsigned int quantity){
+            OrderEntry entry {order.id, quantity};
             resting_map[order.price].push_back(entry);
+            order_map[order.id] = &entry;
         }
 
 };
